@@ -1,0 +1,21 @@
+[
+  {
+    "modid": "dinoutil",
+    "name": "DinoUtil",
+    "description": "Allows for the spawning of specified creatures in specified biomes, along with a small money pouch and some other cute surprises!",
+    "version": "${version}",
+    "credits": "Noobanidus",
+    "logoFile": "assets/dinoutil/textures/logo.png",
+    "mcversion": "${mc_version}",
+    "url": "http://github.com/noobanidus/dinoutil",
+    "updateUrl": "",
+    "authorList": [
+      "Noobanidus"
+    ],
+    "parent": "",
+    "screenshots": [],
+    "dependencies": [
+      "forge"
+    ]
+  }
+]
