@@ -90,7 +90,7 @@ public class ConfigDino {
 
     public List<ResourceLocation> biomes () {
       if (biomeNames == null) {
-        String[] biomes = CONFIG.getStringList("biomes", category, new String[]{"minecraft:plains"}, "List of biomes (modid:biome_name) this entity should spawn in");
+        String[] biomes = CONFIG.getStringList("biomes", category, new String[]{}, "List of biomes (modid:biome_name) this entity should spawn in");
         biomeNames = Stream.of(biomes).map(ResourceLocation::new).collect(Collectors.toList());
       }
 

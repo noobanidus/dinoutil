@@ -1,15 +1,24 @@
 package noobanidus.mods.dinoutil;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.*;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import noobanidus.mods.dinoutil.init.ModItems;
+import noobanidus.mods.dinoutil.pouch.GuiHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +34,20 @@ public class DinoUtil {
   public static final String MODNAME = "DinoUtil";
   public static final String VERSION = "GRADLE:VERSION";
 
+  public static final GuiHandler GUI_HANDLER = new GuiHandler();
+
+  public static Item POUCH_ITEM = null;
+
   public static Logger LOG = LogManager.getLogger(MODID);
+
+  public static Item.ToolMaterial RAINBOW = EnumHelper.addToolMaterial("dinoutil:rainbow", 4, 666, 4.5f, 3.5f, 20);
+
+  public static CreativeTabs tab = new CreativeTabs(DinoUtil.MODID) {
+    @Override
+    public ItemStack createIcon() {
+      return new ItemStack(ModItems.pouch);
+    }
+  };
 
   @SuppressWarnings("unused")
   @Mod.Instance(DinoUtil.MODID)
@@ -34,16 +56,18 @@ public class DinoUtil {
   @Mod.EventHandler
   public void preInit(FMLPreInitializationEvent event) {
     ConfigDino.init();
+    NetworkRegistry.INSTANCE.registerGuiHandler(instance, GUI_HANDLER);
   }
 
   @SuppressWarnings("unchecked")
   @Mod.EventHandler
   public void init (FMLInitializationEvent event) {
     for (ResourceLocation dino : ConfigDino.DINOS) {
-      Class<? extends Entity> clazz = EntityList.getClass(dino);
-      if (clazz == null || EntityLiving.class.isAssignableFrom(clazz)) {
-        LOG.error("Invalid entity ID: " + dino.toString() + " or not a living entity.");
+      EntityEntry entry = ForgeRegistries.ENTITIES.getValue(dino);
+      if (entry == null) {
+        LOG.error("Invalid entity ID: " + dino.toString());
       } else {
+        Class clazz = entry.getEntityClass();
         ConfigDino.DinoConfig conf = ConfigDino.getConfig(dino);
         List<Biome> biomes = conf.biomes().stream().map(o -> {
           Biome b = ForgeRegistries.BIOMES.getValue(o);
@@ -61,5 +85,6 @@ public class DinoUtil {
         }
       }
     }
+    POUCH_ITEM = ForgeRegistries.ITEMS.getValue(new ResourceLocation("mysticalworld", "pearl"));
   }
 }
