@@ -129,7 +129,9 @@ public class ContainerPouch extends Container {
       slotStack = stack.copy();
 
       if (index < 36) { // Player Inventory -> Inventory/herbs
-        if (stack.getItem() == DinoUtil.POUCH_ITEM && mergeItemStack(stack, invStart, invEnd, false)) {
+        if (stack.getItem() != DinoUtil.POUCH_ITEM) {
+          return ItemStack.EMPTY;
+        } else if (!mergeItemStack(stack, invStart, invEnd, false)) {
           return ItemStack.EMPTY;
         }
       } else {
