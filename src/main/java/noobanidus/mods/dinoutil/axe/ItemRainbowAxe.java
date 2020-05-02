@@ -11,9 +11,14 @@ import noobanidus.mods.dinoutil.DinoUtil;
 
 public class ItemRainbowAxe extends ItemAxe {
   public ItemRainbowAxe(String name) {
-    super(DinoUtil.RAINBOW, 8.0f, -3.0f);
+    super(DinoUtil.RAINBOW, 9.5f, -3.0f);
     setTranslationKey(name);
     setRegistryName(DinoUtil.MODID, name);
+  }
+
+  @Override
+  public void setDamage(ItemStack stack, int damage) {
+    // NOOP
   }
 
   @Override

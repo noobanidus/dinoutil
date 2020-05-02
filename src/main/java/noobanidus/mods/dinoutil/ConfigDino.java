@@ -73,7 +73,7 @@ public class ConfigDino {
 
     public EnumCreatureType type () {
       if (type == null) {
-        String value = CONFIG.getString("type", category, EnumCreatureType.CREATURE.name().toLowerCase(), "Spawn type, one of ['creature', 'ambient', 'monster']").toLowerCase();
+        String value = CONFIG.getString("type", category, EnumCreatureType.CREATURE.name().toLowerCase(), "Spawn type, one of ['creature', 'monster']").toLowerCase();
         for (EnumCreatureType val : EnumCreatureType.values()) {
           if (val.name().toLowerCase().equals(value)) {
             type = val;
