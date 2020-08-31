@@ -1,0 +1,13 @@
+{
+    "variants":{
+        "age=0":  { "model": "dinoutil:bean_crop_0" },
+        "age=1":  { "model": "dinoutil:bean_crop_0" },
+        "age=2":  { "model": "dinoutil:bean_crop_1" },
+        "age=3":  { "model": "dinoutil:bean_crop_1" },
+        "age=4":  { "model": "dinoutil:bean_crop_2" },
+        "age=5":  { "model": "dinoutil:bean_crop_2" },
+        "age=6":  { "model": "dinoutil:bean_crop_2" },
+        "age=7":  { "model": "dinoutil:bean_crop_3" },
+        "inventory": { "model": "dinoutil:magic_bean" }
+    }
+}

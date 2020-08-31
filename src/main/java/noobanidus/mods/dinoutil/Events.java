@@ -14,5 +14,6 @@ public class Events {
   public static void onModelLoad (ModelRegistryEvent event) {
     ModelLoader.setCustomModelResourceLocation(ModItems.pouch, 0, new ModelResourceLocation(ModItems.pouch.getRegistryName(), "inventory"));
     ModelLoader.setCustomModelResourceLocation(ModItems.rainbow_axe, 0, new ModelResourceLocation(ModItems.rainbow_axe.getRegistryName(), "inventory"));
+    ModelLoader.setCustomModelResourceLocation(ModItems.magic_bean, 0, new ModelResourceLocation(ModItems.magic_bean.getRegistryName(), "inventory"));
   }
 }

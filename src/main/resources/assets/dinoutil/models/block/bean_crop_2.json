@@ -1,0 +1,7 @@
+{
+    "parent": "block/cross",
+    "textures": {
+        "particle": "dinoutil:block/bean_crop2",
+        "cross": "dinoutil:block/bean_crop2"
+    }
+}

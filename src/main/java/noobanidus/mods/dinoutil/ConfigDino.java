@@ -2,16 +2,18 @@ package noobanidus.mods.dinoutil;
 
 import com.google.common.collect.Sets;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.WeightedRandom;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,6 +25,84 @@ public class ConfigDino {
 
   public static Map<ResourceLocation, DinoConfig> CONFIGS = new HashMap<>();
 
+  private static String[] BEAN_CONFIG_RAW = null;
+  private static List<WeightedBean> BEAN_CONFIG = null;
+
+  public static class WeightedBean extends WeightedRandom.Item {
+    private Item item;
+    private int meta;
+    private int count;
+
+    public WeightedBean(Item item, int count, int meta, int weight) {
+      super(weight);
+      this.item = item;
+      this.count = count;
+      this.meta = meta;
+    }
+
+    public ItemStack getItem () {
+      return new ItemStack(item, count, meta);
+    }
+
+    @Nullable
+    public static WeightedBean fromString (String string) {
+      if (string.isEmpty()) {
+        return null;
+      }
+      String[] stuff = string.split(";");
+      if (stuff.length != 3) {
+        throw new IllegalStateException("Config requires three values separated by ;, got: " + string);
+      }
+      String[] itemStuff = stuff[0].split(":");
+      if (itemStuff.length != 3) {
+        throw new IllegalStateException("Item config requires three values (mod, item, meta)");
+      }
+      Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemStuff[0], itemStuff[1]));
+      if (item == null) {
+        throw new IllegalStateException("Item specified in config does note xist: " + stuff[0]);
+      }
+      int meta = -1;
+      int weight = -1;
+      int count = -1;
+      try {
+        meta = Integer.valueOf(itemStuff[2]);
+      } catch (NumberFormatException e) {
+        throw new IllegalStateException("Meta specified for item is invalid: " + stuff[0], e);
+      }
+      try {
+        count = Integer.valueOf(stuff[1]);
+      } catch (NumberFormatException e) {
+        throw new IllegalStateException("Count specified for row is invalid: " + string, e);
+      }
+      try {
+        weight = Integer.valueOf(stuff[1]);
+      } catch (NumberFormatException e) {
+        throw new IllegalStateException("Weight specified for row is invalid: " + string, e);
+      }
+      return new WeightedBean(item, count, meta, weight);
+    }
+  }
+
+  public static List<WeightedBean> getBeanConfig () {
+    if (BEAN_CONFIG_RAW == null) {
+      BEAN_CONFIG_RAW = CONFIG.getStringList("bean_config", "beans", new String[]{"minecraft:diamond:0;1;1", "minecraft:coal:0;3;20"}, "a list of mod:item:meta;count;weight");
+    }
+    if (BEAN_CONFIG == null) {
+      BEAN_CONFIG = Stream.of(BEAN_CONFIG_RAW).map(WeightedBean::fromString).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+    return BEAN_CONFIG;
+  }
+
+  public static Random random = new Random();
+
+  public static WeightedBean getRandomBean () {
+    return WeightedRandom.getRandomItem(random, getBeanConfig());
+  }
+
+  public static float getGrowthChance (float value) {
+    return value * CONFIG.getFloat("bean_growth", "bean", 0.65f, 0, Float.MAX_VALUE, "the value to multiply growth by (default 65% of vanilla growth)");
+  }
+
   public static void init () {
     CONFIG = new Configuration(PATH.toFile());
     for (ResourceLocation entity : DINOS) {
@@ -31,6 +111,9 @@ public class ConfigDino {
       config.init();
       CONFIGS.put(entity, config);
     }
+    getBeanConfig();
+    getGrowthChance(1.0f);
+
     CONFIG.save();
   }
 
