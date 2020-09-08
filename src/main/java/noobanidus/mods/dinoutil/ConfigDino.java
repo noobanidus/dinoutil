@@ -57,9 +57,10 @@ public class ConfigDino {
       if (itemStuff.length != 3) {
         throw new IllegalStateException("Item config requires three values (mod, item, meta)");
       }
-      Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemStuff[0], itemStuff[1]));
+      ResourceLocation rl = new ResourceLocation(itemStuff[0], itemStuff[1]);
+      Item item = ForgeRegistries.ITEMS.getValue(rl);
       if (item == null) {
-        throw new IllegalStateException("Item specified in config does note xist: " + stuff[0]);
+        throw new IllegalStateException("Item specified in config does not exist: " + rl);
       }
       int meta = -1;
       int weight = -1;
@@ -83,12 +84,16 @@ public class ConfigDino {
     }
   }
 
-  public static List<WeightedBean> getBeanConfig () {
+  public static String[] getBeanConfigRaw () {
     if (BEAN_CONFIG_RAW == null) {
       BEAN_CONFIG_RAW = CONFIG.getStringList("bean_config", "beans", new String[]{"minecraft:diamond:0;1;1", "minecraft:coal:0;3;20"}, "a list of mod:item:meta;count;weight");
     }
+    return BEAN_CONFIG_RAW;
+  }
+
+  public static List<WeightedBean> getBeanConfig () {
     if (BEAN_CONFIG == null) {
-      BEAN_CONFIG = Stream.of(BEAN_CONFIG_RAW).map(WeightedBean::fromString).filter(Objects::nonNull).collect(Collectors.toList());
+      BEAN_CONFIG = Stream.of(getBeanConfigRaw()).map(WeightedBean::fromString).filter(Objects::nonNull).collect(Collectors.toList());
     }
     return BEAN_CONFIG;
   }
@@ -111,7 +116,7 @@ public class ConfigDino {
       config.init();
       CONFIGS.put(entity, config);
     }
-    getBeanConfig();
+    getBeanConfigRaw();
     getGrowthChance(1.0f);
 
     CONFIG.save();

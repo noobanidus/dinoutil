@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.0.0.2"
+version = "1.12.2-0.0.0.2-gnu-smells-like-roses"
 group = "noobanidus.mods.dinoutil"
 archivesBaseName = "dinoutil"
 
