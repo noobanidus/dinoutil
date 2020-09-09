@@ -2,14 +2,20 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 
-version = "1.12.2-0.0.1.3"
+version = "1.12.2-0.0.1.4"
 group = "noobanidus.mods.dinoutil"
 archivesBaseName = "dinoutil"
 
@@ -26,7 +32,20 @@ minecraft {
     mappings = "stable_39"
     useDepAts = true
 
+    def args = [
+            "-Dfml.coreMods.load=noobanidus.mods.dinoutil.core.DULoadingPlugin",
+            "-Dmixin.hotSwap=true",
+            "-Dmixin.checks.interfaces=true"
+    ]
+    clientJvmArgs.addAll(args)
+    serverJvmArgs.addAll(args)
+
     replace "GRADLE:VERSION", project.version
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
 }
 
 repositories {
@@ -37,11 +56,34 @@ repositories {
     maven {
         url "https://maven.mcmoddev.com/"
     }
+    maven {
+        name = "sponge"
+        url = "http://repo.spongepowered.org/maven/"
+    }
+    maven { url "http://www.dimdev.org/maven" }
+    maven {
+        name = 'Curse Maven by WynPrice'
+        url = "https://www.cursemaven.com"
+    }
 }
 
 dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
+
+    deobfCompile "curse.maven:fossils:2919673"
+
+    shade("org.spongepowered:mixin:0.8") {
+        transitive = false
+        exclude module: "asm-commons"
+        exclude module: "asm-tree"
+        exclude module: "launchwrapper"
+        exclude module: "guava"
+        exclude module: "log4j-core"
+        exclude module: "gson"
+        exclude module: "commons-io"
+    }
+
 }
 
 processResources {
@@ -68,11 +110,28 @@ task deobfJar (type: Jar) {
 
 jar {
     manifest {
-        //attributes 'FMLAT': 'fzkk_at.cfg'
+        attributes([
+                "FMLCorePluginContainsFMLMod": "true",
+                "FMLCorePlugin"              : "noobanidus.mods.dinoutil.core.DULoadingPlugin",
+                "TweakClass"                 : "org.spongepowered.asm.launch.MixinTweaker",
+                "ForceLoadAsMod"             : "true"
+        ])
     }
+
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            rename 'LICENSE.txt', 'org/spongepowered/LICENSE.txt'
+            exclude '**/*.html'
+        }
+    }
+
 }
 
 artifacts {
     archives deobfJar
+}
+
+mixin {
+    add sourceSets.main, "mixins.dinoutil.refmap.json"
 }
 
