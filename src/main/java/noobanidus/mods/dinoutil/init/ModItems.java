@@ -22,5 +22,7 @@ public class ModItems {
     registry.register(pouch = new ItemPouch("coin_pouch").setCreativeTab(DinoUtil.tab));
     registry.register(rainbow_axe = new ItemRainbowAxe("rainbow_axe").setCreativeTab(DinoUtil.tab));
     registry.register(magic_bean = new ItemSeeds(ModBlocks.bean_crop, Blocks.FARMLAND).setRegistryName(new ResourceLocation(DinoUtil.MODID, "magic_bean")).setTranslationKey("dinoutil.magic_bean").setCreativeTab(DinoUtil.tab));
+    registry.register(sugar_pin = new Itemsugar_pin("sugar_pin").setCreativeTab(DinoUtil.tab));
+
   }
 }
