@@ -1,0 +1,15 @@
+{
+  "package": "noobanidus.mods.dinoutil.mixins",
+  "required": true,
+  "refmap": "mixins.dinoutil.refmap.json",
+  "target": "@env(INIT)",
+  "minVersion": "0.6",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinLoader"
+  ],
+  "client": [],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}

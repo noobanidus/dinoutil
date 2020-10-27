@@ -15,7 +15,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.12.2-0.0.1.4"
+version = "1.12.2-0.0.1.5"
 group = "noobanidus.mods.dinoutil"
 archivesBaseName = "dinoutil"
 
