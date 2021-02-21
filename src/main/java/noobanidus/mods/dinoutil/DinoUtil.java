@@ -41,6 +41,8 @@ public class DinoUtil {
   public static Logger LOG = LogManager.getLogger(MODID);
 
   public static Item.ToolMaterial RAINBOW = EnumHelper.addToolMaterial("dinoutil:rainbow", 4, 666, 4.5f, 3.5f, 20);
+  public static Item.ToolMaterial SUGAR = EnumHelper.addToolMaterial("dinoutil:sugar", 4, 666, 4.5f, 0f, 20);
+
 
   public static CreativeTabs tab = new CreativeTabs(DinoUtil.MODID) {
     @Override
